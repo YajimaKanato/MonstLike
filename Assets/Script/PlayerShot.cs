@@ -1,21 +1,24 @@
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class PlayerShot : MonoBehaviour
 {
+    [Header("HP")]
+    [SerializeField]
+    float _hp;
+
+    [Header("AttackPower")]
+    [SerializeField]
+    float _attackPower;
+
     [Header("DecelerationRate")]
     [SerializeField]
     float _deceleration;
-
-    [Header("MaxDrag")]
-    [SerializeField]
-    float _maxDrag;
 
     [Header("MaxSpeed")]
     [SerializeField]
     float _maxSpeed;
 
-    Rigidbody2D _rigid2d;
+    Rigidbody2D _rb2d;
     PhysicsMaterial2D _material;
 
     Vector3 _mouseStart;
@@ -28,7 +31,7 @@ public class PlayerShot : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _rigid2d = GetComponent<Rigidbody2D>();
+        _rb2d = GetComponent<Rigidbody2D>();
         _material = GetComponent<PhysicsMaterial2D>();
     }
 
@@ -38,29 +41,36 @@ public class PlayerShot : MonoBehaviour
         //引っ張り
         if (Input.GetMouseButtonDown(0) && !_isShotNow)
         {
+            //マウス座標を取得しワールド座標に変換
             _mousePos = Input.mousePosition;
             _mouseStart = Camera.main.ScreenToWorldPoint(new Vector3(_mousePos.x, _mousePos.y, 10));
         }
         if (Input.GetMouseButtonUp(0) && !_isShotNow)
         {
+            //マウス座標を取得しワールド座標に変換
             _mousePos = Input.mousePosition;
             _mouseEnd = Camera.main.ScreenToWorldPoint(new Vector3(_mousePos.x, _mousePos.y, 10));
+            //打ち出すベクトルを取得
             _speed = _mouseStart - _mouseEnd;
-            if (Vector3.Distance(_mouseStart, _mouseEnd) > _maxDrag)
-            {
-                _speed = _speed / _speed.magnitude * _maxDrag;
-            }
-            _rigid2d.linearVelocity = _speed * _maxSpeed;
+            _speed = _speed / _speed.magnitude;
+            //取得したベクトルで打ち出す
+            _rb2d.AddForce(_speed * _maxSpeed, ForceMode2D.Impulse);
             _isShotNow = true;
+        }
+
+        //死亡処理
+        if (_hp <= 0)
+        {
+            Destroy(gameObject);
         }
     }
 
     private void FixedUpdate()
     {
         //減速
-        if (_rigid2d.linearVelocity.magnitude > 1f)
+        if (_rb2d.linearVelocity.magnitude > 1f)
         {
-            _rigid2d.linearVelocity *= _deceleration;
+            _rb2d.linearVelocity *= _deceleration;
         }
         else
         {
@@ -68,14 +78,25 @@ public class PlayerShot : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 攻撃する関数
+    /// </summary>
+    /// <returns></returns>
+    public float Attack()
+    {
+        return _attackPower;
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "Enemy")
         {
-            //プレイヤーの速度よりも速かったら（当たった後）
-            if (GameObject.FindWithTag("Enemy").GetComponent<Rigidbody2D>().linearVelocity.magnitude > _rigid2d.linearVelocity.magnitude)
+            GameObject enemy = collision.gameObject;
+            //当たった後に敵の速度よりも速くなっていたら（敵より遅く当たったら）
+            if (enemy.GetComponent<Rigidbody2D>().linearVelocity.magnitude < _rb2d.linearVelocity.magnitude)
             {
-
+                Debug.Log("P:Damage!");
+                _hp -= enemy.GetComponent<EnemyBase>().Attack();
             }
         }
     }

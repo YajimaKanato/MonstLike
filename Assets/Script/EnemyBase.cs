@@ -33,7 +33,7 @@ public abstract class EnemyBase : MonoBehaviour
 
     [Header("Particle")]
     [SerializeField]
-    GameObject _particle;
+    protected GameObject _particle;
 
     Rigidbody2D _rb2d;
     protected GameObject _player;
@@ -85,15 +85,7 @@ public abstract class EnemyBase : MonoBehaviour
         //死亡処理
         if (_hp <= 0)
         {
-            if (_particle)
-            {
-                Instantiate(_particle, transform.position, Quaternion.identity);
-            }
-            else
-            {
-                Debug.LogWarning("パーティクルが登録されていません");
-            }
-            Destroy(gameObject);
+            Die();
         }
     }
 
@@ -140,4 +132,9 @@ public abstract class EnemyBase : MonoBehaviour
     /// ダメージを受けた時のアクションを制御する関数
     /// </summary>
     public abstract void Damage();
+
+    /// <summary>
+    /// 死ぬときのアクションをする関数
+    /// </summary>
+    public abstract void Die();
 }

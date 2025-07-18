@@ -17,4 +17,17 @@ public class ToughEnemy : EnemyBase
         _hp -= _player.GetComponent<PlayerShot>().GetAttackPower() * (1 - (_combo * _resistRate));
         _combo = 0;
     }
+
+    public override void Die()
+    {
+        if (_particle)
+        {
+            Instantiate(_particle, transform.position, Quaternion.identity);
+        }
+        else
+        {
+            Debug.LogWarning("パーティクルが登録されていません");
+        }
+        Destroy(gameObject);
+    }
 }

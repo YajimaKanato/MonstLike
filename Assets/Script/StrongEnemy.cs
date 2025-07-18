@@ -17,4 +17,17 @@ public class StrongEnemy : EnemyBase
         _combo = 0;
         _hp -= _player.GetComponent<PlayerShot>().GetAttackPower();
     }
+
+    public override void Die()
+    {
+        if (_particle)
+        {
+            Instantiate(_particle, transform.position, Quaternion.identity);
+        }
+        else
+        {
+            Debug.LogWarning("パーティクルが登録されていません");
+        }
+        Destroy(gameObject);
+    }
 }

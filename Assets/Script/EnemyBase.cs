@@ -1,3 +1,4 @@
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -24,15 +25,29 @@ public abstract class EnemyBase : MonoBehaviour
     protected float _interval;
     float _delta;
 
+    [Header("Rigidbody2D")]
+    [SerializeField, Range(0, 1)]
+    protected float _friction;
+    [SerializeField, Range(0, 1)]
+    protected float _bounciness;
+
+    [Header("Particle")]
+    [SerializeField]
+    GameObject _particle;
+
     Rigidbody2D _rb2d;
-    GameObject _player;
+    protected GameObject _player;
 
     bool _isShotNow = false;
+    protected int _combo;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         _rb2d = GetComponent<Rigidbody2D>();
+        _rb2d.gravityScale = 0;
+        _rb2d.sharedMaterial.friction = _friction;
+        _rb2d.sharedMaterial.bounciness = _bounciness;
         gameObject.tag = "Enemy";
         _player = GameObject.FindWithTag("Player");
     }
@@ -70,6 +85,14 @@ public abstract class EnemyBase : MonoBehaviour
         //死亡処理
         if (_hp <= 0)
         {
+            if (_particle)
+            {
+                Instantiate(_particle, transform.position, Quaternion.identity);
+            }
+            else
+            {
+                Debug.LogWarning("パーティクルが登録されていません");
+            }
             Destroy(gameObject);
         }
     }
@@ -84,18 +107,37 @@ public abstract class EnemyBase : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
-            GameObject player = collision.gameObject;
             //当たった後にプレイヤーの速度よりも速くなっていたら（プレイヤーより遅く当たったら）
-            if (player.GetComponent<Rigidbody2D>().linearVelocity.magnitude < _rb2d.linearVelocity.magnitude)
+            if (_player.GetComponent<Rigidbody2D>().linearVelocity.magnitude < _rb2d.linearVelocity.magnitude)
             {
+                //ダメージを受ける
                 Debug.Log("E:Damage!");
-                _hp -= player.GetComponent<PlayerShot>().Attack();
+                Damage();
+            }
+            else
+            {
+                //攻撃アクションをする
+                Attack();
             }
         }
+    }
+
+    /// <summary>
+    /// 攻撃力を取得する関数
+    /// </summary>
+    /// <returns></returns>
+    public float GetAttackPower()
+    {
+        return _attackPower;
     }
 
     /// <summary>
     /// 攻撃する関数
     /// </summary>
     public abstract float Attack();
+
+    /// <summary>
+    /// ダメージを受けた時のアクションを制御する関数
+    /// </summary>
+    public abstract void Damage();
 }

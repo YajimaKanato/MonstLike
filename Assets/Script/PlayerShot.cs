@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerShot : MonoBehaviour
 {
     [Header("HP")]
@@ -32,6 +33,7 @@ public class PlayerShot : MonoBehaviour
     void Start()
     {
         _rb2d = GetComponent<Rigidbody2D>();
+        _rb2d.gravityScale = 0;
         _material = GetComponent<PhysicsMaterial2D>();
     }
 
@@ -79,12 +81,18 @@ public class PlayerShot : MonoBehaviour
     }
 
     /// <summary>
-    /// 攻撃する関数
+    /// 攻撃力を取得する関数
     /// </summary>
     /// <returns></returns>
-    public float Attack()
+    public float GetAttackPower()
     {
         return _attackPower;
+    }
+
+    //攻撃時に行うアクションをする関数
+    void Attack()
+    {
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -95,8 +103,14 @@ public class PlayerShot : MonoBehaviour
             //当たった後に敵の速度よりも速くなっていたら（敵より遅く当たったら）
             if (enemy.GetComponent<Rigidbody2D>().linearVelocity.magnitude < _rb2d.linearVelocity.magnitude)
             {
+                //ダメージを受ける
                 Debug.Log("P:Damage!");
-                _hp -= enemy.GetComponent<EnemyBase>().Attack();
+                _hp -= enemy.GetComponent<EnemyBase>().GetAttackPower();
+            }
+            else
+            {
+                //攻撃アクションをする
+                Attack();
             }
         }
     }

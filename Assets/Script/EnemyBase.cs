@@ -103,7 +103,7 @@ public abstract class EnemyBase : MonoBehaviour
             if (_player.GetComponent<Rigidbody2D>().linearVelocity.magnitude < _rb2d.linearVelocity.magnitude)
             {
                 //ƒ_ƒ[ƒW‚ðŽó‚¯‚é
-                Debug.Log("E:Damage!");
+                Debug.Log("<color=red>E</color>:Damage!");
                 Damage();
             }
             else

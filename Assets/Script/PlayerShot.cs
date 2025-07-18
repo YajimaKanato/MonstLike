@@ -104,7 +104,7 @@ public class PlayerShot : MonoBehaviour
             if (enemy.GetComponent<Rigidbody2D>().linearVelocity.magnitude < _rb2d.linearVelocity.magnitude)
             {
                 //ƒ_ƒ[ƒW‚ðŽó‚¯‚é
-                Debug.Log("P:Damage!");
+                Debug.Log("<color=yellow>P</color>:Damage!");
                 _hp -= enemy.GetComponent<EnemyBase>().GetAttackPower();
             }
             else

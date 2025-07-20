@@ -6,16 +6,14 @@ public class BGController : MonoBehaviour
     [SerializeField]
     GameObject _movingObject;
 
-    [Header("SpriteRenderer"), Tooltip("背景のスプライトを設定してください")]
-    [SerializeField]
+    [Header("BackGround")]
+    [SerializeField, Tooltip("背景のスプライトを設定してください")]
     SpriteRenderer _spriteRenderer;
 
-    [Header("BackGround"), Tooltip("動かす背景オブジェクト")]
-    [SerializeField]
+    [SerializeField, Tooltip("動かす背景オブジェクト")]
     GameObject _backGround;
 
-    [Header("MoveRate"), Tooltip("操作するオブジェクトに対してどれくらいの速度で動かすか")]
-    [SerializeField]
+    [SerializeField, Tooltip("操作するオブジェクトに対してどれくらいの速度で動かすか")]
     float _moveRate;
 
     Rigidbody2D _movingObjectRb2d;

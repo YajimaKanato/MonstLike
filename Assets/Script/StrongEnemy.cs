@@ -22,7 +22,7 @@ public class StrongEnemy : EnemyBase
     {
         if (_particle)
         {
-            Instantiate(_particle, transform.position, Quaternion.identity);
+            Instantiate(_particle, transform.position, _particle.transform.rotation);
         }
         else
         {

@@ -70,7 +70,7 @@ public class PlayerShot : MonoBehaviour
     private void FixedUpdate()
     {
         //減速
-        if (_rb2d.linearVelocity.magnitude > 1f)
+        if (_rb2d.linearVelocity.magnitude > 2f)
         {
             _rb2d.linearVelocity *= _deceleration;
         }
@@ -89,10 +89,22 @@ public class PlayerShot : MonoBehaviour
         return _attackPower;
     }
 
-    //攻撃時に行うアクションをする関数
+    /// <summary>
+    /// 攻撃時に行うアクションをする関数
+    /// </summary>
     void Attack()
     {
 
+    }
+
+    /// <summary>
+    /// ダメージを受けた時の関数
+    /// </summary>
+    /// <param name="enemy"> ダメージを与えてきたオブジェクト</param>
+    void Damage(GameObject enemy)
+    {
+        Debug.Log("<color=yellow>P</color>:Damage!");
+        _hp -= enemy.GetComponent<EnemyBase>().GetAttackPower();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -104,8 +116,7 @@ public class PlayerShot : MonoBehaviour
             if (enemy.GetComponent<Rigidbody2D>().linearVelocity.magnitude < _rb2d.linearVelocity.magnitude)
             {
                 //ダメージを受ける
-                Debug.Log("<color=yellow>P</color>:Damage!");
-                _hp -= enemy.GetComponent<EnemyBase>().GetAttackPower();
+                Damage(enemy);
             }
             else
             {

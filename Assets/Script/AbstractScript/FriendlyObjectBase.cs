@@ -1,16 +1,23 @@
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public abstract class FriendlyObjectBase : MonoBehaviour
 {
+    [Header("CoolTime")]
+    [SerializeField]
+    float _coolTime = 1;
+
     Rigidbody2D _rb2d;
+
+    bool _isAttacking = false;
+    float _delta = 0;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         _rb2d = GetComponent<Rigidbody2D>();
         _rb2d.gravityScale = 0;
-        Debug.Log("a");
     }
 
     // Update is called once per frame
@@ -23,12 +30,36 @@ public abstract class FriendlyObjectBase : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
-            FriendAttack();
+            if (!_isAttacking)
+            {
+                FriendAttack();
+                StartCoroutine(CoolTimeCoroutine());
+            }
+        }
+    }
+
+    /// <summary>
+    /// クールタイムを管理する関数
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator CoolTimeCoroutine()
+    {
+        _isAttacking = true;
+        while (true)
+        {
+            _delta += Time.deltaTime;
+            if (_delta > _coolTime)
+            {
+                _delta = 0;
+                _isAttacking = false;
+                yield break;
+            }
+            yield return null;
         }
     }
 
     /// <summary>
     /// プレイヤーが当たった時に行う関数
     /// </summary>
-    protected abstract void FriendAttack(); 
+    protected abstract void FriendAttack();
 }

@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class SpreadBulletController : BulletBase
 {
+    float _degree;
+
     protected override void SetUp()
     {
         _degree = transform.rotation.eulerAngles.z;

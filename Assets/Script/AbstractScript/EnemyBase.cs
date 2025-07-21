@@ -44,6 +44,7 @@ public abstract class EnemyBase : MonoBehaviour
     bool _isShotNow = false;
     bool _isAttacking = false;
     protected int _combo;
+    float _nowHP;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -54,6 +55,7 @@ public abstract class EnemyBase : MonoBehaviour
         _rb2d.sharedMaterial.bounciness = _bounciness;
         gameObject.tag = "Enemy";
         _player = GameObject.FindWithTag("Player");
+        _nowHP = _hp;
     }
 
     // Update is called once per frame
@@ -116,7 +118,7 @@ public abstract class EnemyBase : MonoBehaviour
                 Debug.Log("<color=red>E</color>:Damage!");
                 Damage();
             }
-            else if(!_player.GetComponent<PlayerShot>().GetState() && _isAttacking)
+            else if (!_player.GetComponent<PlayerShot>().GetState() && _isAttacking)
             {
                 //UŒ‚ƒAƒNƒVƒ‡ƒ“‚ğ‚·‚é
                 Attack();
@@ -148,6 +150,15 @@ public abstract class EnemyBase : MonoBehaviour
     public bool GetState()
     {
         return _isAttacking;
+    }
+
+    /// <summary>
+    /// Œ»İHP‚ğæ“¾‚·‚éŠÖ”
+    /// </summary>
+    /// <returns></returns>
+    public float GetHPRate()
+    {
+        return _nowHP / _hp;
     }
 
     /// <summary>

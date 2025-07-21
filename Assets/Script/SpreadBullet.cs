@@ -10,10 +10,6 @@ public class SpreadBullet : FriendlyObjectBase
     [SerializeField, Tooltip("âΩìxä‘äuÇ≈ë≈ÇøèoÇ∑Ç©")]
     float _degree = 10;
 
-    [Header("Bullet")]
-    [SerializeField]
-    GameObject _bullet;
-
     protected override void FriendAttack()
     {
         StartCoroutine(ShotCoroutine());

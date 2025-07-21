@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -12,7 +13,13 @@ public abstract class FriendlyObjectBase : MonoBehaviour
     [SerializeField]
     float _power = 1;
 
+    [Header("Bullet")]
+    [SerializeField]
+    protected GameObject _bullet;
+
     Rigidbody2D _rb2d;
+
+    Vector3 _basePos;
 
     bool _isAttacking = false;
     float _delta = 0;
@@ -22,12 +29,14 @@ public abstract class FriendlyObjectBase : MonoBehaviour
     {
         _rb2d = GetComponent<Rigidbody2D>();
         _rb2d.gravityScale = 0;
+        _rb2d.freezeRotation = true;
+        _basePos = transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
-        _rb2d.linearVelocity = Vector3.zero;
+        transform.position = _basePos;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

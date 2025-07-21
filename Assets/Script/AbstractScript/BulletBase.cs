@@ -22,7 +22,6 @@ public abstract class BulletBase : MonoBehaviour
     protected Rigidbody2D _rb2d;
 
     protected float _delta = 0;
-    protected float _degree;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -47,8 +46,15 @@ public abstract class BulletBase : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Instantiate(_particle, transform.position, Quaternion.identity);
-        Destroy(gameObject);
+        if (_particle)
+        {
+            Instantiate(_particle, transform.position, Quaternion.identity);
+        }
+        else
+        {
+            Debug.LogWarning("爆発のパーティクルが設定されていません");
+        }
+            Destroy(gameObject);
     }
 
     /// <summary>

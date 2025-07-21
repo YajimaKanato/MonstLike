@@ -1,4 +1,3 @@
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -11,6 +10,10 @@ public abstract class EnemyBase : MonoBehaviour
     [Header("AttackPower")]
     [SerializeField]
     protected float _attackPower;
+
+    [Header("NextAttackSpeed")]
+    [SerializeField]
+    float _nextAttackSpeed;
 
     [Header("DecelerationRate")]
     [SerializeField]
@@ -39,6 +42,7 @@ public abstract class EnemyBase : MonoBehaviour
     protected GameObject _player;
 
     bool _isShotNow = false;
+    bool _isAttacking = false;
     protected int _combo;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -67,8 +71,14 @@ public abstract class EnemyBase : MonoBehaviour
             else
             {
                 _rb2d.AddForce((_player.transform.position - transform.position).normalized * _speed, ForceMode2D.Impulse);
+                _isAttacking = true;
             }
             _isShotNow = true;
+        }
+
+        if (_rb2d.linearVelocity.magnitude <= _nextAttackSpeed)
+        {
+            _isAttacking = false;
         }
 
         //次の打ち出しまでのインターバル
@@ -99,18 +109,26 @@ public abstract class EnemyBase : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
-            //当たった後にプレイヤーの速度よりも速くなっていたら（プレイヤーより遅く当たったら）
-            if (_player.GetComponent<Rigidbody2D>().linearVelocity.magnitude < _rb2d.linearVelocity.magnitude)
+            //プレイヤーだけが攻撃中だったら
+            if (_player.GetComponent<PlayerShot>().GetState() && !_isAttacking)
             {
                 //ダメージを受ける
                 Debug.Log("<color=red>E</color>:Damage!");
                 Damage();
             }
-            else
+            else if(!_player.GetComponent<PlayerShot>().GetState() && _isAttacking)
             {
                 //攻撃アクションをする
                 Attack();
             }
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "FriendlyBullet")
+        {
+            _hp -= collision.gameObject.GetComponent<BulletBase>().GetPower();
         }
     }
 
@@ -121,6 +139,15 @@ public abstract class EnemyBase : MonoBehaviour
     public float GetAttackPower()
     {
         return _attackPower;
+    }
+
+    /// <summary>
+    /// 攻撃中かどうかを取得する関数
+    /// </summary>
+    /// <returns></returns>
+    public bool GetState()
+    {
+        return _isAttacking;
     }
 
     /// <summary>

@@ -8,6 +8,10 @@ public abstract class FriendlyObjectBase : MonoBehaviour
     [SerializeField]
     float _coolTime = 1;
 
+    [Header("Power")]
+    [SerializeField]
+    float _power = 1;
+
     Rigidbody2D _rb2d;
 
     bool _isAttacking = false;

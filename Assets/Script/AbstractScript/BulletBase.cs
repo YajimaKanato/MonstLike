@@ -23,25 +23,54 @@ public abstract class BulletBase : MonoBehaviour
 
     protected float _delta = 0;
 
+    public static float _simulateSpeed = 1;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         SetUp();
+        gameObject.tag = "FriendlyBullet";
     }
 
     // Update is called once per frame
     void Update()
     {
-        _delta += Time.deltaTime;
+        _delta += Time.deltaTime * _simulateSpeed;
         if (_delta > _lifeTime)
         {
             Destroy(gameObject);
         }
     }
 
+    private void FixedUpdate()
+    {
+
+    }
+
+    /// <summary>
+    /// 弾の攻撃力を取得する関数
+    /// </summary>
+    /// <returns></returns>
     public float GetPower()
     {
         return _power;
+    }
+
+    /// <summary>
+    /// シミュレーション速度を変化させる関数
+    /// </summary>
+    /// <param name="speed"> 何倍にするかの数値</param>
+    /// <returns></returns>
+    public void SpeedDown(float speed)
+    {
+        _simulateSpeed = speed;
+        _rb2d.linearVelocity *= speed;
+    }
+
+    public void SpeedUp(float speed)
+    {
+        _simulateSpeed = 1;
+        _rb2d.linearVelocity /= speed;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -54,7 +83,7 @@ public abstract class BulletBase : MonoBehaviour
         {
             Debug.LogWarning("爆発のパーティクルが設定されていません");
         }
-            Destroy(gameObject);
+        Destroy(gameObject);
     }
 
     /// <summary>

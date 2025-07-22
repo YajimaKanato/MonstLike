@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class HomingBulletController : BulletBase
 {
@@ -17,16 +18,19 @@ public class HomingBulletController : BulletBase
 
     private void Update()
     {
-        _getTarget = GetTarget();
-        if (_getTarget)
-        {
-            _rb2d.linearVelocity = (GetTarget().transform.position - gameObject.transform.position).normalized * _speed;
-        }
-
         _delta += Time.deltaTime;
         if (_delta > _lifeTime)
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        _getTarget = GetTarget();
+        if (_getTarget)
+        {
+            _rb2d.linearVelocity = (GetTarget().transform.position - gameObject.transform.position).normalized * _speed * BulletBase._simulateSpeed;
         }
     }
 

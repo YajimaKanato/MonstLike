@@ -1,5 +1,4 @@
 using System.Collections;
-using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -23,6 +22,7 @@ public abstract class FriendlyObjectBase : MonoBehaviour
 
     bool _isAttacking = false;
     float _delta = 0;
+    public static float _simulateSpeed = 1;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -31,6 +31,7 @@ public abstract class FriendlyObjectBase : MonoBehaviour
         _rb2d.gravityScale = 0;
         _rb2d.freezeRotation = true;
         _basePos = transform.position;
+        gameObject.tag = "FriendlyObject";
     }
 
     // Update is called once per frame
@@ -49,6 +50,21 @@ public abstract class FriendlyObjectBase : MonoBehaviour
                 StartCoroutine(CoolTimeCoroutine());
             }
         }
+    }
+
+    /// <summary>
+    /// シミュレーション速度を変化させる関数
+    /// </summary>
+    /// <param name="speed"> 何倍にするかの数値</param>
+    /// <returns></returns>
+    public void SpeedDown(float speed)
+    {
+        _simulateSpeed = speed;
+    }
+
+    public void SpeedUp(float speed)
+    {
+        _simulateSpeed = speed;
     }
 
     /// <summary>

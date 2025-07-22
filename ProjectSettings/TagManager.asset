@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Enemy
   - FriendlyBullet
+  - FriendlyObject
   layers:
   - Default
   - TransparentFX

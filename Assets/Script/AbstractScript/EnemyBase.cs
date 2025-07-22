@@ -45,6 +45,7 @@ public abstract class EnemyBase : MonoBehaviour
     bool _isAttacking = false;
     protected int _combo;
     float _nowHP;
+    public static float _simulateSpeed = 1;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -68,17 +69,17 @@ public abstract class EnemyBase : MonoBehaviour
             {
                 Debug.LogWarning("Playerが見つかりません");
                 float rad = Random.Range(0, 2 * Mathf.PI);
-                _rb2d.AddForce(new Vector3(Mathf.Cos(rad), Mathf.Sin(rad), 0) * _speed, ForceMode2D.Impulse);
+                _rb2d.AddForce(new Vector3(Mathf.Cos(rad), Mathf.Sin(rad), 0) * _speed * EnemyBase._simulateSpeed, ForceMode2D.Impulse);
             }
             else
             {
-                _rb2d.AddForce((_player.transform.position - transform.position).normalized * _speed, ForceMode2D.Impulse);
+                _rb2d.AddForce((_player.transform.position - transform.position).normalized * _speed * EnemyBase._simulateSpeed, ForceMode2D.Impulse);
                 _isAttacking = true;
             }
             _isShotNow = true;
         }
 
-        if (_rb2d.linearVelocity.magnitude <= _nextAttackSpeed)
+        if (_rb2d.linearVelocity.magnitude <= _nextAttackSpeed * EnemyBase._simulateSpeed)
         {
             _isAttacking = false;
         }
@@ -86,7 +87,7 @@ public abstract class EnemyBase : MonoBehaviour
         //次の打ち出しまでのインターバル
         if (_isShotNow)
         {
-            _delta += Time.deltaTime;
+            _delta += Time.deltaTime * EnemyBase._simulateSpeed;
             if (_delta > _interval)
             {
                 _delta = 0;
@@ -159,6 +160,23 @@ public abstract class EnemyBase : MonoBehaviour
     public float GetHPRate()
     {
         return _nowHP / _hp;
+    }
+
+    /// <summary>
+    /// シミュレーション速度を変化させる関数
+    /// </summary>
+    /// <param name="speed"> 何倍にするかの数値</param>
+    /// <returns></returns>
+    public void SpeedDown(float speed)
+    {
+        _simulateSpeed = speed;
+        _rb2d.linearVelocity *= speed;
+    }
+
+    public void SpeedUp(float speed)
+    {
+        _simulateSpeed = 1;
+        _rb2d.linearVelocity /= speed;
     }
 
     /// <summary>

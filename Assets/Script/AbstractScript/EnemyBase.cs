@@ -41,11 +41,13 @@ public abstract class EnemyBase : MonoBehaviour
     Rigidbody2D _rb2d;
     protected GameObject _player;
 
+    Vector3 _shotVector = Vector3.zero;//初速
+
     bool _isShotNow = false;
     bool _isAttacking = false;
     protected int _combo;
     float _nowHP;
-    public static float _simulateSpeed = 1;
+    public static float _simulateSpeed = 1;//スローモーションとかに使う
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -69,11 +71,15 @@ public abstract class EnemyBase : MonoBehaviour
             {
                 Debug.LogWarning("Playerが見つかりません");
                 float rad = Random.Range(0, 2 * Mathf.PI);
-                _rb2d.AddForce(new Vector3(Mathf.Cos(rad), Mathf.Sin(rad), 0) * _speed * EnemyBase._simulateSpeed, ForceMode2D.Impulse);
+                //_rb2d.AddForce(new Vector3(Mathf.Cos(rad), Mathf.Sin(rad), 0) * _speed * EnemyBase._simulateSpeed, ForceMode2D.Impulse);
+                _shotVector = new Vector3(Mathf.Cos(rad), Mathf.Sin(rad), 0) * _speed;
+                _rb2d.linearVelocity = _shotVector;
             }
             else
             {
-                _rb2d.AddForce((_player.transform.position - transform.position).normalized * _speed * EnemyBase._simulateSpeed, ForceMode2D.Impulse);
+                //_rb2d.AddForce((_player.transform.position - transform.position).normalized * _speed * EnemyBase._simulateSpeed, ForceMode2D.Impulse);
+                _shotVector = (_player.transform.position - transform.position).normalized * _speed;
+                _rb2d.linearVelocity = _shotVector * EnemyBase._simulateSpeed;
                 _isAttacking = true;
             }
             _isShotNow = true;
@@ -105,7 +111,9 @@ public abstract class EnemyBase : MonoBehaviour
     private void FixedUpdate()
     {
         //減速
-        _rb2d.linearVelocity *= _deceleration;
+        _shotVector *= Mathf.Pow(_deceleration, EnemyBase._simulateSpeed);
+
+        _rb2d.linearVelocity = _shotVector * EnemyBase._simulateSpeed;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

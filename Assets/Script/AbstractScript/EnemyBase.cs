@@ -38,6 +38,10 @@ public abstract class EnemyBase : MonoBehaviour
     [SerializeField]
     protected GameObject _particle;
 
+    [Header("ChargeParticle")]
+    [SerializeField]
+    GameObject _charge;
+
     Rigidbody2D _rb2d;
     protected GameObject _player;
 
@@ -47,18 +51,23 @@ public abstract class EnemyBase : MonoBehaviour
     bool _isAttacking = false;
     protected int _combo;
     float _nowHP;
-    public static float _simulateSpeed = 1;//スローモーションとかに使う
+    protected static float _simulateSpeed = 1;//スローモーションとかに使う
+    public static float SimulateSpeed { set { _simulateSpeed = value; } }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        //Rigidbody2Dの初期設定
         _rb2d = GetComponent<Rigidbody2D>();
         _rb2d.gravityScale = 0;
         _rb2d.sharedMaterial.friction = _friction;
         _rb2d.sharedMaterial.bounciness = _bounciness;
+        //タグ取得
         gameObject.tag = "Enemy";
+        //プレイヤー取得
         _player = GameObject.FindWithTag("Player");
         _nowHP = _hp;
+        _charge.SetActive(false);
     }
 
     // Update is called once per frame
@@ -83,11 +92,13 @@ public abstract class EnemyBase : MonoBehaviour
                 _isAttacking = true;
             }
             _isShotNow = true;
+            _charge?.SetActive(false);
         }
 
         if (_rb2d.linearVelocity.magnitude <= _nextAttackSpeed * EnemyBase._simulateSpeed)
         {
             _isAttacking = false;
+            _charge?.SetActive(true);
         }
 
         //次の打ち出しまでのインターバル
@@ -168,23 +179,6 @@ public abstract class EnemyBase : MonoBehaviour
     public float GetHPRate()
     {
         return _nowHP / _hp;
-    }
-
-    /// <summary>
-    /// シミュレーション速度を変化させる関数
-    /// </summary>
-    /// <param name="speed"> 何倍にするかの数値</param>
-    /// <returns></returns>
-    public void SpeedDown(float speed)
-    {
-        _simulateSpeed = speed;
-        _rb2d.linearVelocity *= speed;
-    }
-
-    public void SpeedUp(float speed)
-    {
-        _simulateSpeed = 1;
-        _rb2d.linearVelocity /= speed;
     }
 
     /// <summary>

@@ -22,7 +22,8 @@ public abstract class FriendlyObjectBase : MonoBehaviour
 
     bool _isAttacking = false;
     float _delta = 0;
-    public static float _simulateSpeed = 1;
+    protected static float _simulateSpeed = 1;
+    public static float SimulateSpeed { set { _simulateSpeed = value; } }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -50,21 +51,6 @@ public abstract class FriendlyObjectBase : MonoBehaviour
                 StartCoroutine(CoolTimeCoroutine());
             }
         }
-    }
-
-    /// <summary>
-    /// シミュレーション速度を変化させる関数
-    /// </summary>
-    /// <param name="speed"> 何倍にするかの数値</param>
-    /// <returns></returns>
-    public void SpeedDown(float speed)
-    {
-        _simulateSpeed = speed;
-    }
-
-    public void SpeedUp(float speed)
-    {
-        _simulateSpeed = speed;
     }
 
     /// <summary>

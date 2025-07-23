@@ -23,6 +23,10 @@ public class PlayerShot : MonoBehaviour
     [SerializeField]
     float _nextAttackSpeed = 3;
 
+    [Header("Charge")]
+    [SerializeField]
+    GameObject _charge;
+
     Rigidbody2D _rb2d;
     PhysicsMaterial2D _material;
 
@@ -32,6 +36,10 @@ public class PlayerShot : MonoBehaviour
     Vector3 _vector;
 
     bool _isAttacking = false;
+    bool _isDragging = false;
+
+    static float _simulateSpeed = 1;
+    public static float SimulateSpeed { set { _simulateSpeed = value; } }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -39,6 +47,7 @@ public class PlayerShot : MonoBehaviour
         _rb2d = GetComponent<Rigidbody2D>();
         _rb2d.gravityScale = 0;
         _material = GetComponent<PhysicsMaterial2D>();
+        _charge.SetActive(false);
     }
 
     // Update is called once per frame
@@ -50,8 +59,10 @@ public class PlayerShot : MonoBehaviour
             //マウス座標を取得しワールド座標に変換
             _mousePos = Input.mousePosition;
             _mouseStart = Camera.main.ScreenToWorldPoint(new Vector3(_mousePos.x, _mousePos.y, 10));
+            _charge?.SetActive(true);
+            _isDragging = true;
         }
-        if (Input.GetMouseButtonUp(0) && !_isAttacking)
+        if (Input.GetMouseButtonUp(0) && !_isAttacking && _isDragging)
         {
             //マウス座標を取得しワールド座標に変換
             _mousePos = Input.mousePosition;
@@ -61,7 +72,10 @@ public class PlayerShot : MonoBehaviour
             _vector = _vector / _vector.magnitude;
             //取得したベクトルで打ち出す
             _rb2d.AddForce(_vector * _speed, ForceMode2D.Impulse);
+            _rb2d.linearVelocity = _vector * _speed * _simulateSpeed;
             _isAttacking = true;
+            _charge?.SetActive(false);
+            _isDragging = false;
         }
 
         //死亡処理
@@ -74,9 +88,10 @@ public class PlayerShot : MonoBehaviour
     private void FixedUpdate()
     {
         //減速
-        if (_rb2d.linearVelocity.magnitude > _nextAttackSpeed)
+        if (_rb2d.linearVelocity.magnitude > _nextAttackSpeed * _simulateSpeed)
         {
-            _rb2d.linearVelocity *= _deceleration;
+            _vector *= _deceleration;
+            _rb2d.linearVelocity = _vector * _speed * _simulateSpeed;
         }
         else
         {
@@ -131,7 +146,7 @@ public class PlayerShot : MonoBehaviour
                 //ダメージを受ける
                 Damage(enemy);
             }
-            else if(!enemy.GetComponent<EnemyBase>().GetState() && _isAttacking)
+            else if (!enemy.GetComponent<EnemyBase>().GetState() && _isAttacking)
             {
                 //攻撃アクションをする
                 Attack();

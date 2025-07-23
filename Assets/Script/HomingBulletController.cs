@@ -1,5 +1,5 @@
+using System.Collections;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 public class HomingBulletController : BulletBase
 {
@@ -7,13 +7,17 @@ public class HomingBulletController : BulletBase
     GameObject _returnTarget;
     GameObject _getTarget;
 
+    float _firstAngle;
     float _compareHP;
+    bool _firstActionEnd = false;
 
     protected override void SetUp()
     {
         _rb2d = GetComponent<Rigidbody2D>();
         _rb2d.gravityScale = 0;
         gameObject.tag = "FriendlyBullet";
+        _firstAngle = transform.rotation.eulerAngles.z;
+        StartCoroutine(FirstCoroutine());
     }
 
     private void Update()
@@ -27,10 +31,13 @@ public class HomingBulletController : BulletBase
 
     private void FixedUpdate()
     {
-        _getTarget = GetTarget();
-        if (_getTarget)
+        if (_firstActionEnd)
         {
-            _rb2d.linearVelocity = (GetTarget().transform.position - gameObject.transform.position).normalized * _speed * BulletBase._simulateSpeed;
+            _getTarget = GetTarget();
+            if (_getTarget)
+            {
+                _rb2d.linearVelocity = (GetTarget().transform.position - gameObject.transform.position).normalized * _speed * BulletBase._simulateSpeed;
+            }
         }
     }
 
@@ -59,5 +66,24 @@ public class HomingBulletController : BulletBase
             }
         }
         return _returnTarget;
+    }
+
+    IEnumerator FirstCoroutine()
+    {
+        float delta = 0;
+        while (true)
+        {
+            delta += Time.deltaTime * BulletBase._simulateSpeed;
+            if (delta > 0.2f)
+            {
+                _firstActionEnd = true;
+                yield break;
+            }
+            else
+            {
+                _rb2d.linearVelocity = new Vector3(Mathf.Cos(_firstAngle * Mathf.Deg2Rad), Mathf.Sin(_firstAngle * Mathf.Deg2Rad), 0) * _speed * BulletBase._simulateSpeed;
+                yield return null;
+            }
+        }
     }
 }

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8482480931158731135}
   - component: {fileID: 3835773225388561170}
   - component: {fileID: 58894696441889983}
+  - component: {fileID: 2960449733664007775}
   m_Layer: 0
   m_Name: PlayerAirFlowParticle
   m_TagString: Untagged
@@ -4847,3 +4848,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _parent: {fileID: 0}
+--- !u!114 &2960449733664007775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4513841980748761167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 572063fe79fc7ad49a3f2530065b35b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

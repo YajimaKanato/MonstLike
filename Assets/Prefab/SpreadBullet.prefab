@@ -169,3 +169,4 @@ MonoBehaviour:
   _lifeTime: 3
   _power: 1
   _particle: {fileID: 1987160521699235055, guid: 00c4f848e06868345b593e00763ee7d1, type: 3}
+  _tagName: FriendlyBullet

@@ -15,6 +15,7 @@ public class SpreadBulletController : BulletBase
 
     private void FixedUpdate()
     {
-        _rb2d.linearVelocity = new Vector3(Mathf.Cos(_degree * Mathf.Deg2Rad), Mathf.Sin(_degree * Mathf.Deg2Rad), 0) * _speed * BulletBase._simulateSpeed;
+        //_rb2d.linearVelocity = new Vector3(Mathf.Cos(_degree * Mathf.Deg2Rad), Mathf.Sin(_degree * Mathf.Deg2Rad), 0) * _speed * BulletBase._simulateSpeed;
+        _rb2d.linearVelocity = transform.right * _speed * BulletBase._simulateSpeed;
     }
 }

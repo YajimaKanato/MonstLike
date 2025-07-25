@@ -7,17 +7,23 @@ public class HomingBulletController : BulletBase
     GameObject _returnTarget;
     GameObject _getTarget;
 
-    float _firstAngle;
     float _compareHP;
     bool _firstActionEnd = false;
 
     protected override void SetUp()
     {
+        _getTarget = GetTarget();
         _rb2d = GetComponent<Rigidbody2D>();
         _rb2d.gravityScale = 0;
         gameObject.tag = "FriendlyBullet";
-        _firstAngle = transform.rotation.eulerAngles.z;
-        StartCoroutine(FirstCoroutine());
+        if (_getTarget)
+        {
+            StartCoroutine(FirstCoroutine());
+        }
+        else
+        {
+            _rb2d.linearVelocity = transform.right * _speed * BulletBase._simulateSpeed;
+        }
     }
 
     private void Update()
@@ -33,10 +39,13 @@ public class HomingBulletController : BulletBase
     {
         if (_firstActionEnd)
         {
-            _getTarget = GetTarget();
             if (_getTarget)
             {
-                _rb2d.linearVelocity = (GetTarget().transform.position - gameObject.transform.position).normalized * _speed * BulletBase._simulateSpeed;
+                _rb2d.linearVelocity = (_getTarget.transform.position - gameObject.transform.position).normalized * _speed * BulletBase._simulateSpeed;
+            }
+            else
+            {
+                _getTarget = GetTarget();
             }
         }
     }
@@ -62,27 +71,42 @@ public class HomingBulletController : BulletBase
                 if (go.GetComponent<EnemyBase>().GetHPRate() > _compareHP)
                 {
                     _returnTarget = go;
+                    _compareHP = go.GetComponent<EnemyBase>().GetHPRate();
                 }
             }
         }
         return _returnTarget;
     }
 
+    /// <summary>
+    /// 最初のモーションを管理する関数
+    /// </summary>
+    /// <returns></returns>
     IEnumerator FirstCoroutine()
     {
-        float delta = 0;
+        int direction = Random.Range(0, 2);
+        int[] ints = { -1, 1 };
         while (true)
         {
-            delta += Time.deltaTime * BulletBase._simulateSpeed;
-            if (delta > 0.2f)
+            if (_getTarget)
             {
-                _firstActionEnd = true;
-                yield break;
+                //ターゲットとのベクトルに一定の角度まで近づいたら
+                if (Vector3.Dot(_rb2d.linearVelocity.normalized, (_getTarget.transform.position - gameObject.transform.position).normalized) > Mathf.Cos(Mathf.PI / 12))
+                {
+                    _firstActionEnd = true;
+                    yield break;
+                }
+                else
+                {
+                    //少し回転
+                    gameObject.transform.rotation *= Quaternion.AngleAxis(1 * ints[direction], Vector3.forward);
+                    _rb2d.linearVelocity = transform.right * _speed * BulletBase._simulateSpeed;
+                    yield return null;
+                }
             }
             else
             {
-                _rb2d.linearVelocity = new Vector3(Mathf.Cos(_firstAngle * Mathf.Deg2Rad), Mathf.Sin(_firstAngle * Mathf.Deg2Rad), 0) * _speed * BulletBase._simulateSpeed;
-                yield return null;
+                yield break;
             }
         }
     }

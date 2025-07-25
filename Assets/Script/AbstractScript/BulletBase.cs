@@ -24,7 +24,7 @@ public abstract class BulletBase : MonoBehaviour
     protected float _delta = 0;
 
     protected static float _simulateSpeed = 1;
-    public static float SimulateSpeed {  set { _simulateSpeed = value; } }
+    public static float SimulateSpeed { set { _simulateSpeed = value; } }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -59,15 +59,18 @@ public abstract class BulletBase : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (_particle)
+        if (collision.gameObject.tag == "Enemy")
         {
-            Instantiate(_particle, transform.position, Quaternion.identity);
+            if (_particle)
+            {
+                Instantiate(_particle, transform.position, Quaternion.identity);
+            }
+            else
+            {
+                Debug.LogWarning("爆発のパーティクルが設定されていません");
+            }
+            Destroy(gameObject);
         }
-        else
-        {
-            Debug.LogWarning("爆発のパーティクルが設定されていません");
-        }
-        Destroy(gameObject);
     }
 
     /// <summary>

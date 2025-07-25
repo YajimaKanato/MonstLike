@@ -27,6 +27,10 @@ public class PlayerShot : MonoBehaviour
     [SerializeField]
     GameObject _charge;
 
+    [Header("Arrow")]
+    [SerializeField]
+    GameObject _arrow;
+
     Rigidbody2D _rb2d;
     PhysicsMaterial2D _material;
 
@@ -47,7 +51,8 @@ public class PlayerShot : MonoBehaviour
         _rb2d = GetComponent<Rigidbody2D>();
         _rb2d.gravityScale = 0;
         _material = GetComponent<PhysicsMaterial2D>();
-        _charge.SetActive(false);
+        _charge?.SetActive(false);
+        _arrow?.SetActive(false);
     }
 
     // Update is called once per frame
@@ -60,8 +65,19 @@ public class PlayerShot : MonoBehaviour
             _mousePos = Input.mousePosition;
             _mouseStart = Camera.main.ScreenToWorldPoint(new Vector3(_mousePos.x, _mousePos.y, 10));
             _charge?.SetActive(true);
+            _arrow?.SetActive(true);
             _isDragging = true;
         }
+
+        if (Input.GetMouseButton(0) && !_isAttacking && _isDragging && _arrow)
+        {
+            _mousePos = Input.mousePosition;
+            _mousePos = Camera.main.ScreenToWorldPoint(new Vector3(_mousePos.x, _mousePos.y, 10));
+            _arrow.transform.right = _mouseStart - _mousePos;
+            float len = Vector3.Distance(_mousePos, _mouseStart) > 9 ? 9 : Vector3.Distance(_mousePos, _mouseStart);
+            _arrow.transform.localScale = new Vector3(len / 3, 1, 1);
+        }
+
         if (Input.GetMouseButtonUp(0) && !_isAttacking && _isDragging)
         {
             //マウス座標を取得しワールド座標に変換
@@ -75,6 +91,7 @@ public class PlayerShot : MonoBehaviour
             _rb2d.linearVelocity = _vector * _speed * _simulateSpeed;
             _isAttacking = true;
             _charge?.SetActive(false);
+            _arrow?.SetActive(false);
             _isDragging = false;
         }
 

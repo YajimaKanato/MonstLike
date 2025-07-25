@@ -21,8 +21,8 @@ public class Particle : MonoBehaviour
 
     private void FixedUpdate()
     {
-        var a = gameObject.GetComponent<ParticleSystem>().main;
-        a.simulationSpeed = _defaultSpeed * Particle._simulateSpeed;
+        var particle = gameObject.GetComponent<ParticleSystem>().main;
+        particle.simulationSpeed = _defaultSpeed * Particle._simulateSpeed;
     }
 
     public void SpeedDown(float speed)

@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public abstract class FriendlyObjectBase : MonoBehaviour
+public abstract class FriendlyObjectBase : MonoBehaviour,ISimulate
 {
     [Header("CoolTime")]
     [SerializeField]
@@ -23,7 +23,6 @@ public abstract class FriendlyObjectBase : MonoBehaviour
     bool _isAttacking = false;
     float _delta = 0;
     protected static float _simulateSpeed = 1;
-    public static float SimulateSpeed { set { _simulateSpeed = value; } }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -77,4 +76,9 @@ public abstract class FriendlyObjectBase : MonoBehaviour
     /// プレイヤーが当たった時に行う関数
     /// </summary>
     protected abstract void FriendAttack();
+
+    public void SimulateChange(float speed = 1)
+    {
+        _simulateSpeed = speed;
+    }
 }

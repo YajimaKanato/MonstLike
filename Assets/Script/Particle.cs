@@ -1,11 +1,10 @@
 using UnityEngine;
 
-public class Particle : MonoBehaviour
+public class Particle : MonoBehaviour,ISimulate
 {
     float _defaultSpeed;
 
     static float _simulateSpeed = 1;
-    public static float SimulateSpeed { set { _simulateSpeed = value; } }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -33,5 +32,10 @@ public class Particle : MonoBehaviour
     public void SpeedUp(float speed)
     {
         Particle._simulateSpeed = 1;
+    }
+
+    public void SimulateChange(float speed = 1)
+    {
+        _simulateSpeed = speed;
     }
 }

@@ -3,6 +3,12 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     GameObject _player;
+
+    public void DragAction(float speed = 1)
+    {
+        throw new System.NotImplementedException();
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -20,5 +26,15 @@ public class CameraController : MonoBehaviour
         {
             transform.position = _player.transform.position + new Vector3(0, 0, -10);
         }
+    }
+
+    public void ZoomIn()
+    {
+
+    }
+
+    public void ZoomOut()
+    {
+
     }
 }

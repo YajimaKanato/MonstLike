@@ -11,7 +11,6 @@ public class DragAction : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragH
     /// マウスドラッグ開始を検知
     /// </summary>
     /// <param name="eventData"></param>
-    /// <exception cref="System.NotImplementedException"></exception>
     public void OnBeginDrag(PointerEventData eventData)
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -19,11 +18,15 @@ public class DragAction : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragH
         {
             if (!player.GetComponent<PlayerShot>().GetState())
             {
-                FriendlyObjectBase.SimulateSpeed = _speedDown;
-                EnemyBase.SimulateSpeed = _speedDown;
-                BulletBase.SimulateSpeed = _speedDown;
-                Particle.SimulateSpeed = _speedDown;
-                PlayerShot.SimulateSpeed = _speedDown;
+                //すべてのゲームオブジェクトを取得
+                var go = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+                foreach (var sim in go)
+                {
+                    //ISimulateインターフェースを取得できた場合に行う
+                    sim.GetComponent<ISimulate>()?.SimulateChange(_speedDown);
+                }
+
+                GameObject.Find("Main Camera").GetComponent<Camera>().fieldOfView = 60;
             }
         }
     }
@@ -37,14 +40,15 @@ public class DragAction : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragH
     /// マウスドラッグ終了を検知
     /// </summary>
     /// <param name="eventData"></param>
-    /// <exception cref="System.NotImplementedException"></exception>
     public void OnEndDrag(PointerEventData eventData)
     {
-        FriendlyObjectBase.SimulateSpeed = 1;
-        EnemyBase.SimulateSpeed = 1;
-        BulletBase.SimulateSpeed = 1;
-        Particle.SimulateSpeed = 1;
-        PlayerShot.SimulateSpeed = 1;
+        var go = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+        foreach (var sim in go)
+        {
+            sim.GetComponent<ISimulate>()?.SimulateChange(1);
+        }
+
+        GameObject.Find("Main Camera").GetComponent<Camera>().fieldOfView = 80;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

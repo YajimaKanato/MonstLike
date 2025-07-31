@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class DragAction : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHandler
+public class DragAction : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
     [Header("SpeedDown")]
     [SerializeField]
     float _speedDown = 0.2f;
+
+    bool _isDragging = false;
 
     /// <summary>
     /// マウスドラッグ開始を検知
@@ -18,15 +20,13 @@ public class DragAction : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragH
         {
             if (!player.GetComponent<PlayerShot>().GetState())
             {
-                //すべてのゲームオブジェクトを取得
-                var go = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
-                foreach (var sim in go)
-                {
-                    //ISimulateインターフェースを取得できた場合に行う
-                    sim.GetComponent<ISimulate>()?.SimulateChange(_speedDown);
-                }
-
-                GameObject.Find("Main Camera").GetComponent<Camera>().fieldOfView = 60;
+                _isDragging = true;
+                PlayerShot.SimulateSpeed = _speedDown;
+                Particle.SimulateSpeed = _speedDown;
+                EnemyBase.SimulateSpeed = _speedDown;
+                BulletBase.SimulateSpeed = _speedDown;
+                FriendlyObjectBase.SimulateSpeed = _speedDown;
+                GameObject.Find("Main Camera").GetComponent<CameraController>().ZoomIn();
             }
         }
     }
@@ -42,13 +42,16 @@ public class DragAction : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragH
     /// <param name="eventData"></param>
     public void OnEndDrag(PointerEventData eventData)
     {
-        var go = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
-        foreach (var sim in go)
+        if (_isDragging)
         {
-            sim.GetComponent<ISimulate>()?.SimulateChange(1);
+            _isDragging = false;
+            PlayerShot.SimulateSpeed = 1;
+            Particle.SimulateSpeed = 1;
+            EnemyBase.SimulateSpeed = 1;
+            BulletBase.SimulateSpeed = 1;
+            FriendlyObjectBase.SimulateSpeed = 1;
+            GameObject.Find("Main Camera").GetComponent<CameraController>().ZoomOut();
         }
-
-        GameObject.Find("Main Camera").GetComponent<Camera>().fieldOfView = 80;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -60,6 +63,6 @@ public class DragAction : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragH
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

@@ -1115,6 +1115,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25b87f9921d62cf46912a7da42bce982, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _zoomInParam: 60
+  _zoomOutParam: 80
+  _zoomSpeed: 0.2
 --- !u!1 &580460701 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2798654482156308516, guid: f8a2cc71e91979b4ba40bd0b2a6ab4e6, type: 3}

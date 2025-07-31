@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class PlayerShot : MonoBehaviour,ISimulate
+public class PlayerShot : MonoBehaviour
 {
     [Header("HP")]
     [SerializeField]
@@ -43,6 +43,7 @@ public class PlayerShot : MonoBehaviour,ISimulate
     bool _isDragging = false;
 
     static float _simulateSpeed = 1;
+    public static float SimulateSpeed { set { _simulateSpeed = value; } }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -168,10 +169,5 @@ public class PlayerShot : MonoBehaviour,ISimulate
                 Attack();
             }
         }
-    }
-
-    public void SimulateChange(float speed = 1)
-    {
-        _simulateSpeed = speed;
     }
 }

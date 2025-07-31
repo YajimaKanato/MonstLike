@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public abstract class EnemyBase : MonoBehaviour,ISimulate
+public abstract class EnemyBase : MonoBehaviour
 {
     [Header("HP")]
     [SerializeField]
@@ -52,6 +52,7 @@ public abstract class EnemyBase : MonoBehaviour,ISimulate
     protected int _combo;
     float _nowHP;
     static float _simulateSpeed = 1;//スローモーションとかに使う
+    public static float SimulateSpeed { set { _simulateSpeed = value; } }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -194,9 +195,4 @@ public abstract class EnemyBase : MonoBehaviour,ISimulate
     /// 死ぬときのアクションをする関数
     /// </summary>
     public abstract void Die();
-
-    public void SimulateChange(float speed = 1)
-    {
-        _simulateSpeed = speed;
-    }
 }

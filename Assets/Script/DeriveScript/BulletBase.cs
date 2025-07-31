@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public abstract class BulletBase : MonoBehaviour,ISimulate
+public abstract class BulletBase : MonoBehaviour
 {
     [Header("Speed")]
     [SerializeField]
@@ -24,6 +24,7 @@ public abstract class BulletBase : MonoBehaviour,ISimulate
     protected float _delta = 0;
 
     protected static float _simulateSpeed = 1;
+    public static float SimulateSpeed { set { _simulateSpeed = value; } }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -76,9 +77,4 @@ public abstract class BulletBase : MonoBehaviour,ISimulate
     /// èâä˙ê›íËÇ∑ÇÈä÷êî
     /// </summary>
     protected abstract void SetUp();
-
-    public void SimulateChange(float speed = 1)
-    {
-        _simulateSpeed = speed;
-    }
 }
